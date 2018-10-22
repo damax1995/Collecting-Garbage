@@ -171,7 +171,7 @@ public class MarsEnv extends Environment {
             setAgPos(1, getAgPos(1)); // just to draw it in the view
         }
 
-        void moveTowards(int x, int y) throws Exception {
+        /*void moveTowards(int x, int y) throws Exception {
             Location r1 = getAgPos(0);
             if (r1.x < x)
                 r1.x++;
@@ -183,6 +183,31 @@ public class MarsEnv extends Environment {
                 r1.y--;
             setAgPos(0, r1);
             setAgPos(1, getAgPos(1)); // just to draw it in the view
+        }*/
+
+        void moveTowards(int x, int y) throws Exception {
+
+        	Location l = new Location(GSize-1, GSize-1);
+			System.out.println(getAgPos(0));
+	        if(l != getAgPos(0)){ //If the agent is not in the last position
+
+	            Location r1 = getAgPos(0);
+	            if (r1.x < x)
+	                r1.x++;
+	            else if (r1.x > x)
+	                r1.x--;
+	            if (r1.y < y)
+	                r1.y++;
+	            else if (r1.y > y)
+	                r1.y--;
+	            setAgPos(0, r1);
+            	setAgPos(1, getAgPos(1)); // just to draw it in the view
+        	}
+        	else{
+        		setAgPos(0, 0, 0);
+        		setAgPos(1, getAgPos(1));
+        	}
+            
         }
 
         void pickGarb() {
