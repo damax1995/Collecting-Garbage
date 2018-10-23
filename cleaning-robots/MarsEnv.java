@@ -170,7 +170,7 @@ public class MarsEnv extends Environment {
             setAgPos(1, getAgPos(1)); // just to draw it in the view
         }*/
 		
-		void nextSlot() throws Exception {
+		/*void nextSlot() throws Exception {  //SCANNING CONTINUOUSLY
             Location r1 = getAgPos(0);
 			System.out.println(r1);
             
@@ -192,8 +192,32 @@ public class MarsEnv extends Environment {
 			}
             setAgPos(0, r1);
             setAgPos(1, getAgPos(1)); // just to draw it in the view
-        }
+        }*/
 
+		void nextSlot() throws Exception {  
+            Location r1 = getAgPos(0);
+			System.out.println(r1);
+            
+			if(r1.x != 6 || r1.y != 6){
+				r1.y++;
+				if (r1.y == getHeight()) {
+					r1.y = 0;
+					r1.x++;
+				}
+				// finished searching the whole grid
+				if (r1.x == getWidth()) {
+					return;
+				}
+			}
+			else{
+				System.out.println("Hola");
+				r1.x = 0;
+				r1.y = 0;
+			}
+            setAgPos(0, r1);
+            setAgPos(1, getAgPos(1)); // just to draw it in the view
+        }
+		
         void moveTowards(int x, int y) throws Exception {
             Location r1 = getAgPos(0);
             if (r1.x < x)
