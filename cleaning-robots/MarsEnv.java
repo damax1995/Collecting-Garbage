@@ -9,7 +9,6 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.util.Random;
 import java.util.logging.Logger;
-import java.*;
 
 public class MarsEnv extends Environment {
 
@@ -156,7 +155,7 @@ public class MarsEnv extends Environment {
 		}
 		
 		
-        void nextSlot() throws Exception {
+        /*void nextSlot() throws Exception {
             Location r1 = getAgPos(0);
             r1.x++;
             if (r1.x == getWidth()) {
@@ -169,9 +168,32 @@ public class MarsEnv extends Environment {
             }
             setAgPos(0, r1);
             setAgPos(1, getAgPos(1)); // just to draw it in the view
+        }*/
+		
+		void nextSlot() throws Exception {
+            Location r1 = getAgPos(0);
+			System.out.println(r1);
+            r1.x++;
+			if(r1.x != 6 || r1.y != 6){
+				if (r1.x == getWidth()) {
+					r1.x = 0;
+					r1.y++;
+				}
+				// finished searching the whole grid
+				if (r1.y == getHeight()) {
+					return;
+				}
+			}
+			else{
+				System.out.println("Hola");
+				r1.x = 0;
+				r1.y = 0;
+			}
+            setAgPos(0, r1);
+            setAgPos(1, getAgPos(1)); // just to draw it in the view
         }
 
-        /*void moveTowards(int x, int y) throws Exception {
+        void moveTowards(int x, int y) throws Exception {
             Location r1 = getAgPos(0);
             if (r1.x < x)
                 r1.x++;
@@ -183,14 +205,14 @@ public class MarsEnv extends Environment {
                 r1.y--;
             setAgPos(0, r1);
             setAgPos(1, getAgPos(1)); // just to draw it in the view
-        }*/
+        }
 
-        void moveTowards(int x, int y) throws Exception {
+		/*void moveTowards(int x, int y) throws Exception {
 
         	Location l = new Location(GSize-1, GSize-1);
-			System.out.println(getAgPos(0));
+			System.out.println(getAgPos(0));	 
 	        if(l != getAgPos(0)){ //If the agent is not in the last position
-
+				
 	            Location r1 = getAgPos(0);
 	            if (r1.x < x)
 	                r1.x++;
@@ -208,7 +230,7 @@ public class MarsEnv extends Environment {
         		setAgPos(1, getAgPos(1));
         	}
             
-        }
+        }*/
 
         void pickGarb() {
             // r1 location has garbage
