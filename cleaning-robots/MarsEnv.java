@@ -173,8 +173,9 @@ public class MarsEnv extends Environment {
 		void nextSlot() throws Exception {
             Location r1 = getAgPos(0);
 			System.out.println(r1);
-            r1.x++;
+            
 			if(r1.x != 6 || r1.y != 6){
+				r1.x++;
 				if (r1.x == getWidth()) {
 					r1.x = 0;
 					r1.y++;
