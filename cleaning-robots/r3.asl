@@ -2,15 +2,15 @@
 
 /* Initial beliefs */
 
-at(P) :- pos(P,X,Y) & pos(r1,X,Y).
+at(P) :- pos(P,X,Y) & pos(r3,X,Y).
 
 /* Initial goal */
 
-!check(slots).
+!move(slots).
 
 /* Plans */
 
-+!check(slots) : not garbage(r1)
++!move(slots)
    <- next(slot);
       !check(slots).
 
