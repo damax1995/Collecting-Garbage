@@ -11,8 +11,9 @@ at(P) :- pos(P,X,Y) & pos(r3,X,Y).
 /* Plans */
 
 +!move(slot) : not garbage(r3)
-   <- generate(garb);
-   	move(slot);
+   <-?pos(r1,X,Y); 
+   	generate(garb);
+   	moveAway(X,Y);
    	!move(slot).
 
 +!move(slot).

@@ -56,7 +56,9 @@ public class MarsEnv extends Environment {
             } else if (action.equals(bg)) {
                 model.burnGarb();
             } else if (action.equals(mv)) {
-				model.move();
+				int x = (int)((NumberTerm)action.getTerm(0)).solve();
+                int y = (int)((NumberTerm)action.getTerm(1)).solve();
+				model.moveAway(x,y);
 			} else if (action.equals(gg)) {
 				model.generate();
 			}else {
@@ -175,7 +177,6 @@ public class MarsEnv extends Environment {
 
 		void nextSlot() throws Exception {  
             Location r1 = getAgPos(0);
-			System.out.println("AG1: "+r1);
             
 			if(r1.x != 6 || r1.y != 6){
 				r1.y++;
@@ -208,6 +209,22 @@ public class MarsEnv extends Environment {
                 r1.y--;
             setAgPos(0, r1);
             setAgPos(1, getAgPos(1)); // just to draw it in the view
+			setAgPos(2, getAgPos(2)); // just to draw it in the view
+        }
+		
+		void moveAway(int x, int y) throws Exception {
+            Location r3 = getAgPos(2);
+            if (r3.x < x)
+                r3.x--;
+            else if (r3.x > x)
+                r3.x++;
+            if (r3.y < y)
+                r3.y--;
+            else if (r3.y > y)
+                r3.y++;
+            setAgPos(0, getAgPos(0));
+            setAgPos(1, getAgPos(1)); // just to draw it in the view
+			setAgPos(2, r3);
         }
 
         void pickGarb() {
@@ -252,7 +269,7 @@ public class MarsEnv extends Environment {
 	
 		void move(){
 			Location r3 = getAgPos(2);
-			System.out.println(r3);
+			
 			boolean moved = false;
             while(!moved){
 				int dir = r.nextInt(4);
