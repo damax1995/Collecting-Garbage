@@ -216,13 +216,18 @@ public class MarsEnv extends Environment {
         }
         void burnGarb() {
             // r2 location has garbage
+			boolean hasGarb = true;
+			
             if (model.hasObject(GARB, getAgPos(1))) {
-				if(random.nextBoolean() || nerb == MErr){
-                	remove(GARB, getAgPos(1));
-					nerb = 0;
-				}else{
-					nerb++;
-					System.out.println("Soy tonto y fallo");
+				while(hasGarb){
+					if(random.nextBoolean() || nerb == MErr){
+						remove(GARB, getAgPos(1));
+						nerb = 0;
+						hasGarb = false;
+					}else{
+						nerb++;
+						System.out.println("Soy tonto y fallo");
+					}
 				}
             }
         }
