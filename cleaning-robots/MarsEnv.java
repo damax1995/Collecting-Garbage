@@ -252,29 +252,27 @@ public class MarsEnv extends Environment {
 	
 		void move(){
 			Location r3 = getAgPos(2);
-			System.out.println("AG3: "+r3);
-			
-			if(r3.x != 6 || r3.y != 6){
-				r3.y++;
-				if (r3.y == getHeight()) {
-					r3.y = 0;
+			System.out.println(r3);
+			boolean moved = false;
+            while(!moved){
+				int dir = r.nextInt(4);
+				if (dir == 0 && r3.y != 0){
+					r3.y--;
+					moved = true;
+				}else if (dir == 1 && r3.x != 6){
 					r3.x++;
-				}
-				// finished searching the whole grid
-				if (r3.x == getWidth()) {
-					return;
+					moved = true;
+				}else if (dir == 2 && r3.y != 6){
+					r3.y++;	
+					moved = true;
+				}else if (dir == 3 && r3.x != 0){
+					r3.x--;	
+					moved = true;
 				}
 			}
-			else{
-				System.out.println("Hola");
-				r3.x = 0;
-				r3.y = 0;
-			}
-            setAgPos(2, r3);
-            setAgPos(1, getAgPos(1)); // just to draw it in the view            
-			setAgPos(0, getAgPos(0)); // just to draw it in the view
-
-
+			setAgPos(2, r3);
+            setAgPos(0, getAgPos(0));
+            setAgPos(1, getAgPos(1)); // just to draw it in the view
 		}
 	
     }
