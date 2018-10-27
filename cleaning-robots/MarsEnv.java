@@ -274,6 +274,7 @@ public class MarsEnv extends Environment {
             setAgPos(1, getAgPos(1)); // just to draw it in the view            
 			setAgPos(0, getAgPos(0)); // just to draw it in the view
 
+
 		}
 	
     }
@@ -308,10 +309,13 @@ public class MarsEnv extends Environment {
                     c = Color.orange;
                 }
             }
+			else if(id == 2){
+				c = Color.magenta;
+			}
             super.drawAgent(g, x, y, c, -1);
             if (id == 0) {
                 g.setColor(Color.black);
-            } else if(id == 1){
+            } else{
                 g.setColor(Color.white);
             }
 			
