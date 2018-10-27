@@ -274,6 +274,14 @@ public class MarsEnv extends Environment {
             setAgPos(0, getAgPos(0));
             setAgPos(1, getAgPos(1)); // just to draw it in the view
 		}
+		
+		void generate(){
+			Location r3 = getAgPos(2);
+			System.out.println(r3);
+			if(r.nextInt(5) == 0){	
+				add(GARB, r3.x, r3.y);
+			}
+		}
 	
     }
 	
