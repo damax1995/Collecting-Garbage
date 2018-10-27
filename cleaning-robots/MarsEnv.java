@@ -24,7 +24,7 @@ public class MarsEnv extends Environment {
 
 	//r3
 	public static final Term	mv = Literal.parseLiteral("move(slot)");
-	//public static final Term	gg = Literal.parseLiteral("generate(garb)");
+	public static final Term	gg = Literal.parseLiteral("generate(garb)");
 
     static Logger logger = Logger.getLogger(MarsEnv.class.getName());
 
@@ -57,8 +57,8 @@ public class MarsEnv extends Environment {
                 model.burnGarb();
             } else if (action.equals(mv)) {
 				model.move();
-//			} else if (action.equals(gg)) {
-//				model.generate();
+			} else if (action.equals(gg)) {
+				model.generate();
 			}else {
                 return false;
             }

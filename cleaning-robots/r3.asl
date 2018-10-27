@@ -6,12 +6,13 @@ at(P) :- pos(P,X,Y) & pos(r3,X,Y).
 
 /* Initial goal */
 
-!move(slots).
+!move(slot).
 
 /* Plans */
 
-+!move(slot)
-   <- next(slot);
-   	move(slots).
++!move(slot) : not garbage(r3)
+   <- generate(garb);
+   	move(slot);
+   	!move(slot).
 
-+!move(slots).
++!move(slot).
