@@ -21,9 +21,9 @@ public class MarsEnv extends Environment {
     public static final Term    bg = Literal.parseLiteral("burn(garb)");
     public static final Literal g1 = Literal.parseLiteral("garbage(r1)");
     public static final Literal g2 = Literal.parseLiteral("garbage(r2)");
-	
+
 	//r3
-	//public static final Term	mv = Literal.parseLiteral("move(slot)");
+	public static final Term	mv = Literal.parseLiteral("move(slot)");
 	//public static final Term	gg = Literal.parseLiteral("generate(garb)");
 
     static Logger logger = Logger.getLogger(MarsEnv.class.getName());
@@ -55,8 +55,8 @@ public class MarsEnv extends Environment {
                 model.dropGarb();
             } else if (action.equals(bg)) {
                 model.burnGarb();
- //           } else if (action.equals(mv)) {
-//				model.move();
+            } else if (action.equals(mv)) {
+				model.move();
 //			} else if (action.equals(gg)) {
 //				model.generate();
 			}else {
@@ -69,7 +69,7 @@ public class MarsEnv extends Environment {
         updatePercepts();
 
         try {
-            Thread.sleep(200);
+            Thread.sleep(400);
         } catch (Exception e) {}
         informAgsEnvironmentChanged();
         return true;
@@ -81,12 +81,17 @@ public class MarsEnv extends Environment {
 
         Location r1Loc = model.getAgPos(0);
         Location r2Loc = model.getAgPos(1);
+		Location r3Loc = model.getAgPos(2);
+
 
         Literal pos1 = Literal.parseLiteral("pos(r1," + r1Loc.x + "," + r1Loc.y + ")");
         Literal pos2 = Literal.parseLiteral("pos(r2," + r2Loc.x + "," + r2Loc.y + ")");
+		Literal pos3 = Literal.parseLiteral("pos(r3," + r3Loc.x + "," + r3Loc.y + ")");
+
 
         addPercept(pos1);
         addPercept(pos2);
+		addPercept(pos3);
 
         if (model.hasObject(GARB, r1Loc)) {
             addPercept(g1);
@@ -107,7 +112,7 @@ public class MarsEnv extends Environment {
 		Random r = new Random();
 		
         private MarsModel() {
-            super(GSize, GSize, 2);
+            super(GSize, GSize, 3);
 			int[][] occupied = new int[7][2];
 			boolean esta = false;
 			int x, y;
@@ -127,6 +132,18 @@ public class MarsEnv extends Environment {
 				}
 				
                 setAgPos(1, occupied[5][0], occupied[5][1]);
+				esta = false;
+				while(!esta){
+					x = r.nextInt(GSize);
+					y = r.nextInt(GSize);
+					if(occupied[6][0] != x || occupied[6][1] != y || occupied[5][0] != x || occupied[5][1] != y){
+						esta = true;
+						occupied[4][0] = x;
+						occupied[4][1] = y;
+					}
+				}
+				
+                setAgPos(2, occupied[4][0], occupied[4][1]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -158,7 +175,7 @@ public class MarsEnv extends Environment {
 
 		void nextSlot() throws Exception {  
             Location r1 = getAgPos(0);
-			System.out.println(r1);
+			System.out.println("AG1: "+r1);
             
 			if(r1.x != 6 || r1.y != 6){
 				r1.y++;
@@ -172,7 +189,6 @@ public class MarsEnv extends Environment {
 				}
 			}
 			else{
-				System.out.println("Hola");
 				r1.x = 0;
 				r1.y = 0;
 			}
@@ -224,48 +240,43 @@ public class MarsEnv extends Environment {
 						remove(GARB, getAgPos(1));
 						nerb = 0;
 						hasGarb = false;
+						System.out.println("GARB BURNED");
+
 					}else{
 						nerb++;
-						System.out.println("Soy tonto y fallo");
+						System.out.println("Incinerator FAILED "+nerb+"/2");
 					}
 				}
             }
         }
-/*		
+	
 		void move(){
 			Location r3 = getAgPos(2);
-			System.out.println(r3);
-            
-			
+			System.out.println("AG3: "+r3);
 			
 			if(r3.x != 6 || r3.y != 6){
-				r1.y++;
-				if (r1.y == getHeight()) {
-					r1.y = 0;
-					r1.x++;
+				r3.y++;
+				if (r3.y == getHeight()) {
+					r3.y = 0;
+					r3.x++;
 				}
 				// finished searching the whole grid
-				if (r1.x == getWidth()) {
+				if (r3.x == getWidth()) {
 					return;
 				}
 			}
 			else{
 				System.out.println("Hola");
-				r1.x = 0;
-				r1.y = 0;
+				r3.x = 0;
+				r3.y = 0;
 			}
-            setAgPos(0, r1);
-            setAgPos(1, getAgPos(1)); // just to draw it in the view
+            setAgPos(2, r3);
+            setAgPos(1, getAgPos(1)); // just to draw it in the view            
+			setAgPos(0, getAgPos(0)); // just to draw it in the view
+
 		}
-	*/	
+	
     }
-	
-	
-	
-	
-	
-	
-	
 	
     class MarsView extends GridWorldView {
 
@@ -300,9 +311,10 @@ public class MarsEnv extends Environment {
             super.drawAgent(g, x, y, c, -1);
             if (id == 0) {
                 g.setColor(Color.black);
-            } else {
+            } else if(id == 1){
                 g.setColor(Color.white);
             }
+			
             super.drawString(g, x, y, defaultFont, label);
             repaint();
         }
