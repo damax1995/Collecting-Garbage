@@ -25,7 +25,7 @@ public class MarsEnv extends Environment {
 	//r3
 	public static final Term	mv = Literal.parseLiteral("move(slot)");
 	public static final Term	gg = Literal.parseLiteral("generate(garb)");
-
+	
     static Logger logger = Logger.getLogger(MarsEnv.class.getName());
 
     private MarsModel model;
@@ -48,20 +48,22 @@ public class MarsEnv extends Environment {
             } else if (action.getFunctor().equals("move_towards")) {
                 int x = (int)((NumberTerm)action.getTerm(0)).solve();
                 int y = (int)((NumberTerm)action.getTerm(1)).solve();
-                model.moveTowards(x,y);
+				int i = (int)((NumberTerm)action.getTerm(2)).solve(); 
+                model.moveTowards(x,y, i);
             } else if (action.equals(pg)) {
                 model.pickGarb();
             } else if (action.equals(dg)) {
                 model.dropGarb();
             } else if (action.equals(bg)) {
                 model.burnGarb();
-            } else if (action.equals(mv)) {
+            } else if (action.getFunctor().equals("move_away")) {
 				int x = (int)((NumberTerm)action.getTerm(0)).solve();
                 int y = (int)((NumberTerm)action.getTerm(1)).solve();
 				model.moveAway(x,y);
 			} else if (action.equals(gg)) {
 				model.generate();
-			}else {
+			}
+			else {
                 return false;
             }
         } catch (Exception e) {
@@ -84,16 +86,18 @@ public class MarsEnv extends Environment {
         Location r1Loc = model.getAgPos(0);
         Location r2Loc = model.getAgPos(1);
 		Location r3Loc = model.getAgPos(2);
+		Location r4Loc = model.getAgPos(3);
 
 
         Literal pos1 = Literal.parseLiteral("pos(r1," + r1Loc.x + "," + r1Loc.y + ")");
         Literal pos2 = Literal.parseLiteral("pos(r2," + r2Loc.x + "," + r2Loc.y + ")");
 		Literal pos3 = Literal.parseLiteral("pos(r3," + r3Loc.x + "," + r3Loc.y + ")");
-
+		Literal pos4 = Literal.parseLiteral("pos(r4," + r4Loc.x + "," + r4Loc.y + ")");
 
         addPercept(pos1);
         addPercept(pos2);
 		addPercept(pos3);
+		addPercept(pos4);
 
         if (model.hasObject(GARB, r1Loc)) {
             addPercept(g1);
@@ -114,38 +118,51 @@ public class MarsEnv extends Environment {
 		Random r = new Random();
 		
         private MarsModel() {
-            super(GSize, GSize, 3);
-			int[][] occupied = new int[7][2];
+            super(GSize, GSize, 4);
+			int[][] occupied = new int[8][2];
 			boolean esta = false;
 			int x, y;
             // initial location of agents
             try {
-				occupied[6][0] = r.nextInt(GSize);
-				occupied[6][1] = r.nextInt(GSize);
-                setAgPos(0, occupied[6][0], occupied[6][1]);
+				occupied[7][0] = r.nextInt(GSize);
+				occupied[7][1] = r.nextInt(GSize);
+                setAgPos(0, occupied[7][0], occupied[7][1]);
                 while(!esta){
 					x = r.nextInt(GSize);
 					y = r.nextInt(GSize);
-					if(occupied[6][0] != x || occupied[6][1] != y){
+					if(occupied[7][0] != x || occupied[7][1] != y){
+						esta = true;
+						occupied[6][0] = x;
+						occupied[6][1] = y;
+					}
+				}
+				
+                setAgPos(1, occupied[6][0], occupied[6][1]);
+				esta = false;
+				while(!esta){
+					x = r.nextInt(GSize);
+					y = r.nextInt(GSize);
+					if(occupied[7][0] != x || occupied[7][1] != y || occupied[6][0] != x || occupied[6][1] != y){
 						esta = true;
 						occupied[5][0] = x;
 						occupied[5][1] = y;
 					}
 				}
 				
-                setAgPos(1, occupied[5][0], occupied[5][1]);
+                setAgPos(2, occupied[5][0], occupied[5][1]);
+				
 				esta = false;
 				while(!esta){
 					x = r.nextInt(GSize);
 					y = r.nextInt(GSize);
-					if(occupied[6][0] != x || occupied[6][1] != y || occupied[5][0] != x || occupied[5][1] != y){
+					if(occupied[7][0] != x || occupied[7][1] != y || occupied[6][0] != x || occupied[6][1] != y || occupied[5][0] != x || occupied[5][1] != y){
 						esta = true;
 						occupied[4][0] = x;
 						occupied[4][1] = y;
 					}
 				}
 				
-                setAgPos(2, occupied[4][0], occupied[4][1]);
+                setAgPos(3, occupied[4][0], occupied[4][1]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -195,36 +212,50 @@ public class MarsEnv extends Environment {
 			}
             setAgPos(0, r1);
             setAgPos(1, getAgPos(1)); // just to draw it in the view
-        }
+			setAgPos(2, getAgPos(2));
+			setAgPos(3, getAgPos(3));
+		}
 		
-        void moveTowards(int x, int y) throws Exception {
-            Location r1 = getAgPos(0);
-            if (r1.x < x)
-                r1.x++;
-            else if (r1.x > x)
-                r1.x--;
-            if (r1.y < y)
-                r1.y++;
-            else if (r1.y > y)
-                r1.y--;
-            setAgPos(0, r1);
-            setAgPos(1, getAgPos(1)); // just to draw it in the view
-			setAgPos(2, getAgPos(2)); // just to draw it in the view
-        }
+        void moveTowards(int x, int y, int i) throws Exception {
+            Location pos = getAgPos(i);
+            if (pos.x < x)
+                pos.x++;
+            else if (pos.x > x)
+                pos.x--;
+            if (pos.y < y)
+                pos.y++;
+            else if (pos.y > y)
+                pos.y--;
+			
+			if(i == 0){
+				setAgPos(0, pos);
+            	setAgPos(1, getAgPos(1)); // just to draw it in the view
+				setAgPos(2, getAgPos(2)); // just to draw it in the view
+				setAgPos(3, getAgPos(3));
+			}else{
+				setAgPos(0, getAgPos(0));
+            	setAgPos(1, getAgPos(1)); // just to draw it in the view
+				setAgPos(2, getAgPos(2)); // just to draw it in the view
+				setAgPos(3, pos);	
+			}
+		}
+		
 		
 		void moveAway(int x, int y) throws Exception {
             Location r3 = getAgPos(2);
-            if (r3.x < x)
-                r3.x--;
-            else if (r3.x > x)
-                r3.x++;
-            if (r3.y < y)
-                r3.y--;
-            else if (r3.y > y)
-                r3.y++;
+			boolean validated = false;
+			int[] cpos = new int[2];
+			while(!validated){
+				cpos[0] = r.nextInt(7); cpos[1] = r.nextInt(7);
+				if(Math.sqrt((cpos[0]-x)*(cpos[0]-x) + (cpos[1]-y)*(cpos[1]-y)) > 3){
+					validated = true;
+				}
+			}
+			
             setAgPos(0, getAgPos(0));
             setAgPos(1, getAgPos(1)); // just to draw it in the view
-			setAgPos(2, r3);
+			setAgPos(2, cpos[0], cpos[1]);
+			setAgPos(3, getAgPos(3));
         }
 
         void pickGarb() {
@@ -333,7 +364,9 @@ public class MarsEnv extends Environment {
                 }
             }
 			else if(id == 2){
-				c = Color.magenta;
+				c = Color.green;
+			}else if(id == 3){
+				c = Color.red;	
 			}
             super.drawAgent(g, x, y, c, -1);
             if (id == 0) {
